@@ -1,4 +1,4 @@
-import React, { useEffect, useState, CSSProperties } from "react";
+import { useEffect, useState, CSSProperties } from "react";
 
 const baseIframeUrl = import.meta.env.VITE_BASE_IFRAME_URL;
 
@@ -158,7 +158,7 @@ function BaseAgeKeyElement<T extends AgeKeyResult>({
 
   return (
     <div className='agekey-container' style={defaultContainerStyle}>
-      {iframeUrl && (
+      {iframeUrl ? (
         <iframe
           className='agekey-iframe'
           scrolling='no'
@@ -167,22 +167,22 @@ function BaseAgeKeyElement<T extends AgeKeyResult>({
           src={iframeUrl}
           style={defaultIframeStyle}>
         </iframe>
-      )}
+      ): <span style={defaultIframeStyle}>...</span>}
     </div>
   );
 }
 
 // Registration-specific component with typed result
-export const AgeKeyRegister: React.FC<RegisterProps> = (props) => {
+export const AgeKeyRegister = (props: RegisterProps) => {
   return <BaseAgeKeyElement<RegisterResult> {...props} ceremony="register" />;
 };
 
 // Authentication-specific component with typed result
-export const AgeKeyAuthenticate: React.FC<AuthenticateProps> = (props) => {
+export const AgeKeyAuthenticate = (props: AuthenticateProps) => {
   return <BaseAgeKeyElement<AuthenticateResult> {...props} ceremony="authenticate" />;
 };
 
 // Update-specific component with typed result (for future use)
-export const AgeKeyUpdate: React.FC<UpdateProps> = (props) => {
+export const AgeKeyUpdate = (props: UpdateProps) => {
   return <BaseAgeKeyElement<UpdateResult> {...props} ceremony="update" />;
 };
