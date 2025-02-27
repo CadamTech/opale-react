@@ -1,4 +1,4 @@
-import { useEffect, useState, CSSProperties } from "react";
+import React, { useEffect, useState, CSSProperties } from "react";
 
 const baseIframeUrl = import.meta.env.VITE_BASE_IFRAME_URL;
 
@@ -173,16 +173,16 @@ function BaseAgeKeyElement<T extends AgeKeyResult>({
 }
 
 // Registration-specific component with typed result
-export const AgeKeyRegister = (props: RegisterProps) => {
+export const AgeKeyRegister: React.FC<RegisterProps> = (props) => {
   return <BaseAgeKeyElement<RegisterResult> {...props} ceremony="register" />;
 };
 
 // Authentication-specific component with typed result
-export const AgeKeyAuthenticate = (props: AuthenticateProps) => {
+export const AgeKeyAuthenticate: React.FC<AuthenticateProps> = (props) => {
   return <BaseAgeKeyElement<AuthenticateResult> {...props} ceremony="authenticate" />;
 };
 
 // Update-specific component with typed result (for future use)
-export const AgeKeyUpdate = (props: UpdateProps) => {
+export const AgeKeyUpdate: React.FC<UpdateProps> = (props) => {
   return <BaseAgeKeyElement<UpdateResult> {...props} ceremony="update" />;
 };
