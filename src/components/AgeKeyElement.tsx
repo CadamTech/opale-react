@@ -19,7 +19,7 @@ export type ErrorMessage =
   | "Credential not found, please create new credential"
   | "Internal server error";
 
-// Ceremony-specific message and result types
+
 export type RegisterMessage = 'registered' | ErrorMessage;
 
 export interface RegisterResult {
@@ -27,16 +27,21 @@ export interface RegisterResult {
 }
 
 export type AuthenticateMessage = 'authenticated' | ErrorMessage;
+
 export interface AuthenticateResult {
   message: AuthenticateMessage;
-  authenticationData: AuthenticateData;
+  authenticationData: Verifications;
 }
-export type AuthenticateData = {
-  ageEstimation: number;
-  docScan: number;
-  digitalId: number;
-  creditCard: number;
+
+export interface VerificationDetails {
+  ageThreshold: number;
+  date: string; // YYYY-MM-DD
 }
+
+export type Verifications = {
+  [K in VerificationMethod]?: VerificationDetails;
+};
+
 
 export type UpdateMessage = 'updated' | ErrorMessage;
 export interface UpdateResult {
@@ -46,12 +51,15 @@ export interface UpdateResult {
 // Union type for all possible results
 export type AgeKeyResult = RegisterResult | AuthenticateResult | UpdateResult;
 
+
 // Base props interface
 export interface BaseAgeKeyProps {
   publicKey: string;
   sessionId: string;
   ageThreshold?: number;
   verificationMethod?: VerificationMethod;
+  onResult: any;
+  style?: React.CSSProperties;
 }
 
 // Ceremony-specific props with typed onResult callbacks
@@ -70,7 +78,6 @@ export interface UpdateProps extends BaseAgeKeyProps {
 // Generic props for the base component
 interface BaseComponentProps extends BaseAgeKeyProps {
   ceremony: Ceremony;
-  onResult: any;
 }
 
 // Base AgeKey component that handles common functionality
@@ -80,7 +87,8 @@ function BaseAgeKeyElement<T extends AgeKeyResult>({
   ageThreshold = 18,
   verificationMethod,
   ceremony,
-  onResult
+  onResult,
+  style
 }: BaseComponentProps) {
   const [iframeUrl, setIframeUrl] = useState('');
 
@@ -90,13 +98,16 @@ function BaseAgeKeyElement<T extends AgeKeyResult>({
     url.searchParams.append('ceremony', ceremony);
     url.searchParams.append('publicKey', publicKey);
     url.searchParams.append('sessionId', sessionId);
-    
+    url.searchParams.append('ageThreshold', ageThreshold.toString());
+
     if (verificationMethod) {
       url.searchParams.append('verificationMethod', verificationMethod);
     }
-    
-    url.searchParams.append('ageThreshold', ageThreshold.toString());
-    
+
+    if (style) {
+      url.searchParams.append('style', JSON.stringify(style));
+    }
+
     setIframeUrl(url.toString());
   }, [publicKey, sessionId, ageThreshold, verificationMethod, ceremony]);
 
@@ -121,30 +132,22 @@ function BaseAgeKeyElement<T extends AgeKeyResult>({
     };
   }, [onResult]);
 
-  // Default container styles
-  const defaultContainerStyle: CSSProperties = {
-    width: '100%',
-    height: '100%',
-    minHeight: '40px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-  };
-  
-  // Default iframe styles
-  const defaultIframeStyle: CSSProperties = {
+  // Default styles
+  const iframeStyle: CSSProperties = {
     display: 'block',
     margin: '0px',
     padding: '0px',
     border: 'none',
+    borderRadius: '8px',
     width: '200px',
     height: '40px',
-    transition: 'height 0.4s'
+    transition: 'height 0.4s',
+    ...style
   };
 
   // Set appropriate allow attribute based on ceremony
   const getAllowAttribute = (ceremony: Ceremony) => {
-    switch(ceremony) {
+    switch (ceremony) {
       case 'register':
         return "publickey-credentials-create *";
       case 'authenticate':
@@ -156,20 +159,20 @@ function BaseAgeKeyElement<T extends AgeKeyResult>({
     }
   };
 
-  return (
-    <div className='agekey-container' style={defaultContainerStyle}>
-      {iframeUrl ? (
-        <iframe
-          className='agekey-iframe'
-          scrolling='no'
-          allow={getAllowAttribute(ceremony)}
-          loading="lazy"
-          src={iframeUrl}
-          style={defaultIframeStyle}>
-        </iframe>
-      ): <span style={defaultIframeStyle}>...</span>}
-    </div>
-  );
+  if (iframeUrl) {
+    return <iframe
+      scrolling='no'
+      allow={getAllowAttribute(ceremony)}
+      loading="lazy"
+      src={iframeUrl}
+      style={iframeStyle}>
+    </iframe>
+  }
+
+  return <div style={iframeStyle}>
+    ...
+  </div>
+
 }
 
 // Registration-specific component with typed result
