@@ -15,7 +15,7 @@ yarn add opale-react
 
 ### AgeKeyRegister
 
-Component for user registration with age verification.
+Component for AgeKey registration with age verification.
 
 #### Props
 
@@ -40,7 +40,7 @@ function App() {
 
     if (result.message === 'registered') {
       // Handle successful registration
-      console.log('User successfully registered');
+      console.log('AgeKey successfully registered');
       return true;
     };
     return false
@@ -79,7 +79,7 @@ The `onResult` callback receives one of the following result types:
 
 ### AgeKeyAuthenticate
 
-Component for authenticating previously registered users.
+Component for authenticating previously registered AgeKey.
 
 #### Props
 
@@ -149,6 +149,79 @@ export default App;
   }
 }
 ```
+
+### Update AgeKey
+
+Component for adding new verifcation to existing AgeKey.
+
+#### Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| publicKey | string | Yes | Your Opale public key |
+| sessionId | string | Yes | Unique session identifier |
+| verificationMethod | 'ageEstimation' \| 'docScan' \| 'digitalId' \| 'creditCard' | Yes | The verification method used |
+| ageThreshold | number | No | Age threshold for verification (defaults to 18) |
+| onResult | (result: RegisterResult) => any | Yes | Callback function called with verification results |
+
+#### Example
+
+```jsx
+import { AgeKeyUpdate, UpdateResult } from "opale-react";
+
+function App() {
+
+  const handleUpdate = (result: UpdateResult) => {
+    console.log('Update result:', result);
+
+    if (result.message === 'updated') {
+      // Handle successful update
+      console.log('AgeKey successfully updated');
+      return true;
+    };
+    return false
+  };
+
+
+  return (
+    <div>
+      {/* Update component */}
+      <AgeKeyUpdate
+        publicKey="your-public-key-here"
+        sessionId="unique-session-id"
+        verificationMethod="ageEstimation"
+        ageThreshold={18} // Optional - Defaults to 18
+        onResult={handleUpdate}
+      />
+    </div>
+  );
+};
+
+export default App;
+```
+
+### Update Result Example
+
+```typescript
+{
+  message: 'updated',
+  authenticationData: {
+    ageEstimation: {
+      ageThreshold: 18.0,
+      date: "2025-03-04" // YYYY-MM-DD
+    },
+    docScan: {
+      ageThreshold: 21.0,
+      date: "2024-12-31"
+    }
+    docScan: {
+      ageThreshold: 21.0,
+      date: "2025-02-28"
+    }
+  }
+}
+```
+
 
 ### Error Messages
 

@@ -14,10 +14,7 @@ export type ErrorMessage =
   | "Authentication response not provided"
   | "Invalid public key"
   | "Session expired"
-  | "Challenge not found"
-  | "Challenge expired"
-  | "Credential not found, please create new credential"
-  | "Internal server error";
+  | "Credential not found, please create new credential";
 
 
 export type RegisterMessage = 'registered' | ErrorMessage;
@@ -46,6 +43,7 @@ export type Verifications = {
 export type UpdateMessage = 'updated' | ErrorMessage;
 export interface UpdateResult {
   message: UpdateMessage;
+  authenticationData: Verifications;
 }
 
 // Union type for all possible results
