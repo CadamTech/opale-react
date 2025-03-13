@@ -1,10 +1,3 @@
-export { AgeKeyRegister, AgeKeyAuthenticate, AgeKeyUpdate } from './components/AgeKeyElement';
-export type { 
-  RegisterProps,
-  AuthenticateProps,
-  UpdateProps,
-  VerificationMethod,
-  RegisterResult,
-  AuthenticateResult,
-  UpdateResult
-} from './components/AgeKeyElement';
+export { AgeKeyRegister } from './components/AgeKeyRegister';
+export { AgeKeyAuthenticate } from './components/AgeKeyAuthenticate';
+export { AgeKeyUpdate } from './components/AgeKeyUpdate';
