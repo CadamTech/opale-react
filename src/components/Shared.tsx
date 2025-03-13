@@ -1,6 +1,35 @@
-import '../index.css'
+import React, { CSSProperties } from 'react'
 
-export const AgeKeySVG = () => {
+export const defaultButtonStyle: CSSProperties = {
+    width: '200px',
+    height: '40px',
+    position: 'relative',
+    fontSize: '17px',
+    border: '1px solid #2c6cad',
+    cursor: 'pointer',
+    backgroundColor: '#2c6cad',
+    color: 'white',
+    borderRadius: '5px'
+  };
+
+const agekeyIcon: CSSProperties =  {
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    left: '10px'
+}
+
+const agekeyLoaderSvg: CSSProperties = {
+    border: 'none',
+    width: '100%',
+    height: '100%'
+}
+
+const agekeyLoaderSvgCircle: CSSProperties = {
+    fill: 'white'
+}
+
+export const AgeKeySVG: React.FC = () => {
   return (
     <svg
       width="30"
@@ -8,7 +37,7 @@ export const AgeKeySVG = () => {
       viewBox="0 0 256 272"
       fill="white"
       xmlns="http://www.w3.org/2000/svg"
-      className="agekey-icon"
+      style={agekeyIcon}
     >
       <path
         fillRule="evenodd"
@@ -20,7 +49,7 @@ export const AgeKeySVG = () => {
   )
 }
 
-export const LoadingDots = () => {
+export const LoadingDots: React.FC  = () => {
   return (
     <svg
       width="100%"
@@ -33,9 +62,9 @@ export const LoadingDots = () => {
       viewBox="0 0 60 100"
       enableBackground="new 0 0 0 0"
       xmlSpace="preserve"
-      className="agekey-loader-svg"
+      style={agekeyLoaderSvg}
     >
-      <circle stroke="none" cx="10" cy="50" r="6">
+      <circle stroke="none" cx="10" cy="50" r="6" style={agekeyLoaderSvgCircle}>
         <animateTransform
           attributeName="transform"
           dur="1s"
@@ -45,7 +74,7 @@ export const LoadingDots = () => {
           begin="0.1"
         />
       </circle>
-      <circle stroke="none" cx="30" cy="50" r="6">
+      <circle stroke="none" cx="30" cy="50" r="6" style={agekeyLoaderSvgCircle}>
         <animateTransform
           attributeName="transform"
           dur="1s"
@@ -55,7 +84,7 @@ export const LoadingDots = () => {
           begin="0.2"
         />
       </circle>
-      <circle stroke="none" cx="50" cy="50" r="6">
+      <circle stroke="none" cx="50" cy="50" r="6" style={agekeyLoaderSvgCircle}>
         <animateTransform
           attributeName="transform"
           dur="1s"

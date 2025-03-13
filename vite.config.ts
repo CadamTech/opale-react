@@ -12,7 +12,7 @@ export default defineConfig({
       fileName: (format) => `opale-react.${format}.js`
     },
     // sourcemap: 'inline',
-    minify: false, 
+    minify: false,
     rollupOptions: {
       external: ['react', 'react-dom'],
       output: {
@@ -21,17 +21,15 @@ export default defineConfig({
           'react-dom': 'ReactDOM'
         }
       }
+
     }
   },
   plugins: [
     react({
       jsxRuntime: 'classic'
     }),
-    dts({ 
-      include: ['src'],
-      // rollupTypes: true, // Consolidate .d.ts files
-      insertTypesEntry: true, // Add types field to package.json
-      tsconfigPath: './tsconfig.build.json'
+    dts({
+      tsconfigPath: 'tsconfig.app.json'
     })
   ],
 })

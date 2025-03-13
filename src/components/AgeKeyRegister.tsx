@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
-import { RegisterProps } from '../types'
-import { startRegistration } from '@simplewebauthn/browser';
-import { AgeKeySVG, LoadingDots } from './Shared';
-import { RegistrationResponseJSON } from "@simplewebauthn/browser";
 import axios from "axios";
+import { RegisterProps } from './types'
+import { startRegistration, RegistrationResponseJSON  } from '@simplewebauthn/browser';
+import { AgeKeySVG, defaultButtonStyle, LoadingDots } from './Shared';
 
 const baseApiUrl = import.meta.env.VITE_OPALE_API_URL;
 
-export const AgeKeyRegister: React.FC<RegisterProps> = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod }) => {
+export const AgeKeyRegister: React.FC<RegisterProps> = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   async function getRegistrationOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
@@ -38,7 +37,7 @@ export const AgeKeyRegister: React.FC<RegisterProps> = ({ publicKey, sessionId, 
       };
       const registrationResponse = await startRegistration(startRegistrationOptions);
       const response = await verifyRegistration(publicKey, sessionId, registrationResponse);
-      parent.postMessage(response, "*");
+      onResult(response.data);
     } catch (error: any) {
       console.log(error);
     } finally {
@@ -47,7 +46,7 @@ export const AgeKeyRegister: React.FC<RegisterProps> = ({ publicKey, sessionId, 
   }
 
   return (
-    <button onClick={handleRegister} className='agekey-button'><AgeKeySVG />{isLoading ? <LoadingDots /> : "Register"}</button>
+    <button onClick={handleRegister} style={defaultButtonStyle}><AgeKeySVG />{isLoading ? <LoadingDots /> : "Register"}</button>
   )
 }
 

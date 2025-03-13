@@ -46,12 +46,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/opale-react.es.js",
       "require": "./dist/opale-react.cjs.js"
-    },
-    "./types": {
-      "types": "./dist/types.d.ts"
     }
   },
   "files": [

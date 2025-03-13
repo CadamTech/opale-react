@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { AuthenticateProps } from '../types'
 import axios from 'axios';
 import { AuthenticationResponseJSON, startAuthentication } from '@simplewebauthn/browser';
-import { AgeKeySVG, LoadingDots } from './Shared';
+import { AgeKeySVG, defaultButtonStyle, LoadingDots } from './Shared';
+import { AuthenticateProps } from './types'
 
 const baseApiUrl = import.meta.env.VITE_OPALE_API_URL;
 
-export const AgeKeyAuthenticate: React.FC<AuthenticateProps> = ({ publicKey, sessionId }) => {
+export const AgeKeyAuthenticate: React.FC<AuthenticateProps> = ({ publicKey, sessionId, onResult }) => {
   const [isLoading, setIsLoading] = useState(false);
 
 
@@ -25,7 +25,6 @@ export const AgeKeyAuthenticate: React.FC<AuthenticateProps> = ({ publicKey, ses
   };
 
   async function handleAuthenticate() {
-
     try {
       setIsLoading(true);
       const authenticationOptions = await getAuthenticationOptions(publicKey, sessionId);
@@ -34,7 +33,7 @@ export const AgeKeyAuthenticate: React.FC<AuthenticateProps> = ({ publicKey, ses
       };
       const authenticationResponse = await startAuthentication(startAuthenticationOptions);
       const response = await verifyAuthentication(publicKey, sessionId, authenticationResponse);
-      parent.postMessage(response, "*");
+      onResult(response.data);
     } catch (error: any) {
       console.log(error);
     } finally {
@@ -42,6 +41,6 @@ export const AgeKeyAuthenticate: React.FC<AuthenticateProps> = ({ publicKey, ses
     }
   }
   return (
-    <button onClick={handleAuthenticate}><AgeKeySVG />{isLoading ? <LoadingDots /> : "Authenticate"}</button>
+    <button onClick={handleAuthenticate} style={defaultButtonStyle}><AgeKeySVG />{isLoading ? <LoadingDots /> : "Authenticate"}</button>
   )
 }

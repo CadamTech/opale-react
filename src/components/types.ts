@@ -1,3 +1,4 @@
+import React from 'react';
 
 // Common types
 export type Ceremony = 'register' | 'authenticate' | 'update';
