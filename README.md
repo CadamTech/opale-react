@@ -11,78 +11,11 @@ npm install opale-react
 yarn add opale-react
 ```
 
-## Usage
-
-
-```jsx
-// Components
-import { AgeKeyRegister, AgeKeyAuthenticate } from 'opale-react';
-// Types
-import { RegisterResult, AuthenticateResult } from 'opale-react';
-
-function App() {
-
-  const handleRegistration = (result: RegisterResult) => {
-    console.log('Verification result:', result);
-
-    if (result.message === 'registered') {
-      // Handle successful registration
-      console.log('User successfully registered');
-      return true;
-    };
-    return false
-  };
-
-  const handleAuthentcation = (result: AuthenticateResult) => {
-    console.log('authentication result:', result);
-
-    const authenticationData = result.authenticationData;
-    const acceptedMethods = ['ageEstimation', 'docScan'];
-    const requiredAge = 18;
-
-    for (const method of Object.keys(authenticationData)) {
-      if (acceptedMethods.includes(method)) {
-        const age = authenticationData[method];
-        if (age >= requiredAge) {
-          // Handle successful authencation
-          console.log('User successfully authenticated');
-          return true;
-        }
-      }
-      return false
-    }
-  };
-
-  return (
-    <div className="verification-container">
-      {/* Registration component */}
-      <AgeKeyRegister
-        publicKey="your-public-key-here"
-        sessionId="unique-session-id"
-        verificationMethod="ageEstimation"
-        ageThreshold={18} // Optional - Defaults to 18
-        onResult={handleRegistration}
-      />
-
-      {/* Authentication component */}
-      <AgeKeyAuthenticate
-        publicKey="your-public-key-here"
-        sessionId="unique-session-id"
-        onResult={handleAuthentcation}
-      />
-    </div>
-  );
-};
-
-export default App;
-```
-
-
 ## Components
 
 ### AgeKeyRegister
 
-Component for user registration with age verification.
+Component for AgeKey registration with age verification.
 
 #### Props
 
@@ -94,17 +27,42 @@ Component for user registration with age verification.
 | ageThreshold | number | No | Age threshold for verification (defaults to 18) |
 | onResult | (result: RegisterResult) => any | Yes | Callback function called with verification results |
 
-### AgeKeyAuthenticate
+#### Example
 
-Component for authenticating previously registered users.
+```jsx
+import { AgeKeyRegister, RegisterResult } from 'opale-react';
 
-#### Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| publicKey | string | Yes | Your Opale public key |
-| sessionId | string | Yes | Unique session identifier |
-| onResult | (result: AuthenticateResult) => any | Yes | Callback function called with authentication results |
+function App() {
+
+  const handleRegistration = (result: RegisterResult) => {
+    console.log('Verification result:', result);
+
+    if (result.message === 'registered') {
+      // Handle successful registration
+      console.log('AgeKey successfully registered');
+      return true;
+    };
+    return false
+  };
+
+
+  return (
+    <div>
+      {/* Registration component */}
+      <AgeKeyRegister
+        publicKey="your-public-key-here"
+        sessionId="unique-session-id"
+        verificationMethod="ageEstimation"
+        ageThreshold={18} // Optional - Defaults to 18
+        onResult={handleRegistration}
+      />
+    </div>
+  );
+};
+
+export default App;
+```
 
 ## Response Types
 
@@ -118,19 +76,152 @@ The `onResult` callback receives one of the following result types:
 }
 ```
 
-### Authentication Result
+
+### AgeKeyAuthenticate
+
+Component for authenticating previously registered AgeKey.
+
+#### Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| publicKey | string | Yes | Your Opale public key |
+| sessionId | string | Yes | Unique session identifier |
+| onResult | (result: AuthenticateResult) => any | Yes | Callback function called with authentication results |
+
+#### Example
+
+
+```jsx
+import { AgeKeyAuthenticate, AuthenticateResult, VerificationMethod } from 'opale-react';
+
+
+function App() {
+
+  const handleAuthentcation = (result: AuthenticateResult) => {
+    const authenticationData = result.authenticationData;
+    const acceptedMethods: VerificationMethod[] = ['ageEstimation', 'docScan']; // Array of accepted methods
+    const requiredAge = 18; // Minimum required age
+
+    for (let i = 0; i < acceptedMethods.length; i++) {
+      const methodVerification = authenticationData?.[acceptedMethods[i] as VerificationMethod];
+      if (methodVerification?.ageThreshold !== undefined &&
+        methodVerification.ageThreshold >= requiredAge) {
+        console.log("Authentication succesull");
+        // handle successul verification
+        return;
+      }
+    }
+    console.log("Requirements not met");
+    // handle failed verification
+  };
+
+  return (
+    <div>
+      {/* Authentication component */}
+      <AgeKeyAuthenticate
+        publicKey="your-public-key-here"
+        sessionId="unique-session-id"
+        onResult={handleAuthentcation}
+      />
+    </div>
+  );
+};
+
+export default App;
+```
+
+### Authentication Result Example
 
 ```typescript
 {
-  message: 'authenticated' | ErrorMessage,
+  message: 'authenticated',
   authenticationData: {
-    ageEstimation: number;
-    docScan: number;
-    digitalId: number;
-    creditCard: number;
+    ageEstimation: {
+      ageThreshold: 18.0,
+      date: "2025-03-04" // YYYY-MM-DD
+    },
+    docScan: {
+      ageThreshold: 21.0,
+      date: "2024-12-31"
+    }
+    // Other linked verifications can be added
   }
 }
 ```
+
+### Update AgeKey
+
+Component for adding new verifcation to existing AgeKey.
+
+#### Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| publicKey | string | Yes | Your Opale public key |
+| sessionId | string | Yes | Unique session identifier |
+| verificationMethod | 'ageEstimation' \| 'docScan' \| 'digitalId' \| 'creditCard' | Yes | The verification method used |
+| ageThreshold | number | No | Age threshold for verification (defaults to 18) |
+| onResult | (result: RegisterResult) => any | Yes | Callback function called with verification results |
+
+#### Example
+
+```jsx
+import { AgeKeyUpdate, UpdateResult } from "opale-react";
+
+function App() {
+
+  const handleUpdate = (result: UpdateResult) => {
+    console.log('Update result:', result);
+
+    if (result.message === 'updated') {
+      // Handle successful update
+      console.log('AgeKey successfully updated');
+      return true;
+    };
+    return false
+  };
+
+
+  return (
+    <div>
+      {/* Update component */}
+      <AgeKeyUpdate
+        publicKey="your-public-key-here"
+        sessionId="unique-session-id"
+        verificationMethod="ageEstimation"
+        ageThreshold={18} // Optional - Defaults to 18
+        onResult={handleUpdate}
+      />
+    </div>
+  );
+};
+
+export default App;
+```
+
+### Update Result Example
+
+```typescript
+{
+  message: 'updated',
+  authenticationData: {
+    ageEstimation: {
+      ageThreshold: 18.0,
+      date: "2025-03-04" // YYYY-MM-DD
+    },
+    docScan: {
+      ageThreshold: 21.0,
+      date: "2024-12-31"
+    }
+    docScan: {
+      ageThreshold: 21.0,
+      date: "2025-02-28"
+    }
+  }
+}
+```
+
 
 ### Error Messages
 
@@ -147,6 +238,50 @@ Possible error messages include:
 - "Internal server error"
 
 
-### Custom Styling
+## Browser Compatibility
 
-Coming soon
+### Firefox Support
+
+Firefox does not currently support related origin requests on WebAuthn. To handle this limitation, the AgeKey components automatically detect Firefox browsers and implement a special flow. The React Hook included in the package demonstrates how to decode the signature. This should process however be handled serverside as your signing secret is required to validate the signature.
+
+1. When a user is on Firefox, they are temporarily redirected to Opale's domain where the WebAuthn ceremony takes place.
+2. After completion, they are redirected back to your application's callback URL with a signature.
+
+Example of handling Firefox redirects post-ceremony:
+
+```jsx
+import { useOpaleSignature } from 'opale-react';
+
+function App() {
+  const { outcome, expiresIn, data } = useOpaleSignature({ signingSecret });
+
+  return (
+    <div>
+        {outcome}
+        <p>{expiresIn && `Expires in ${expiresIn} seconds`}</p>
+        <p>{data && JSON.stringify(data)}</p>
+    </div>
+  )
+}
+```
+
+
+### Styling
+
+The `style` prop allows custom styling for each AgeKey component. Pass a JavaScript object with CSS properties in camelCase. These styles will be applied to the iframe and button element element.
+
+## Example:
+
+```tsx
+<AgeKeyAuthenticate
+  publicKey="your-public-key-here"
+  sessionId="unique-session-id"
+  onResult={handleRegistration}
+  style={{
+    backgroundColor: 'green',
+    width: '600px',
+    height: '30px',
+    borderRadius: '0'
+  }}
+/>
+```
