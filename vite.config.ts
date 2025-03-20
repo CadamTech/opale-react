@@ -14,14 +14,14 @@ export default defineConfig({
     // sourcemap: 'inline',
     minify: false,
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      external: ['react', 'react-dom', 'react/jsx-runtime'],
       output: {
         globals: {
           react: 'React',
-          'react-dom': 'ReactDOM'
-        }
-      }
-
+          'react-dom': 'React-dom',
+          'react/jsx-runtime': 'react/jsx-runtime',
+        },
+      },
     }
   },
   plugins: [

@@ -9,7 +9,7 @@ export const defaultButtonStyle: CSSProperties = {
     cursor: 'pointer',
     backgroundColor: '#2c6cad',
     color: 'white',
-    borderRadius: '5px'
+    borderRadius: '10px'
   };
 
 const agekeyIcon: CSSProperties =  {
@@ -29,7 +29,7 @@ const agekeyLoaderSvgCircle: CSSProperties = {
     fill: 'white'
 }
 
-export const AgeKeySVG: React.FC = () => {
+export const AgeKeySVG: React.FunctionComponent = () => {
   return (
     <svg
       width="30"
@@ -49,7 +49,7 @@ export const AgeKeySVG: React.FC = () => {
   )
 }
 
-export const LoadingDots: React.FC  = () => {
+export const LoadingDots: React.FunctionComponent  = () => {
   return (
     <svg
       width="100%"

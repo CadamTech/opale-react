@@ -23,11 +23,6 @@ export interface RegisterResult {
 
 export type AuthenticateMessage = 'authenticated' | ErrorMessage;
 
-export interface AuthenticateResult {
-  message: AuthenticateMessage;
-  authenticationData: Verifications;
-}
-
 export interface VerificationDetails {
   ageThreshold: number;
   date: string; // YYYY-MM-DD
@@ -37,15 +32,16 @@ export type Verifications = {
   [K in VerificationMethod]?: VerificationDetails;
 };
 
+export interface AuthenticateResult {
+  message: AuthenticateMessage;
+  authenticationData: Verifications;
+}
 
 export type UpdateMessage = 'updated' | ErrorMessage;
 export interface UpdateResult {
   message: UpdateMessage;
   authenticationData: Verifications;
 }
-
-// Union type for all possible results
-export type AgeKeyResult = RegisterResult | AuthenticateResult | UpdateResult;
 
 
 // Base props interface
@@ -70,4 +66,12 @@ export interface UpdateProps extends BaseAgeKeyProps {
   verificationMethod: VerificationMethod;
   ageThreshold?: number;
   onResult: (data: UpdateResult) => void;
+}
+
+export type Outcome = "pending" | "signatureMismatch" | "timestampExpired" | "verificationFailed" | "success"
+
+export type CallbackData = { 
+  outcome: Outcome,
+  expiresIn: number | null,
+  data: Verifications | null
 }

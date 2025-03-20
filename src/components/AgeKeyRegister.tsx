@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { JSX, useState } from 'react'
 import axios from "axios";
 import { RegisterProps } from './types'
 import { startRegistration, RegistrationResponseJSON  } from '@simplewebauthn/browser';
 import { AgeKeySVG, defaultButtonStyle, LoadingDots } from './Shared';
 
 const baseApiUrl = import.meta.env.VITE_OPALE_API_URL;
+const authUrl = import.meta.env.VITE_OPALE_AUTH_URL;
 
-export const AgeKeyRegister: React.FC<RegisterProps> = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult }) => {
+export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, style }: RegisterProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
 
   async function getRegistrationOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
@@ -31,13 +32,21 @@ export const AgeKeyRegister: React.FC<RegisterProps> = ({ publicKey, sessionId, 
     e.preventDefault();
     try {
       setIsLoading(true);
+
+      // Check for Firefox and redirect if needed
+      if (window.navigator.userAgent.search("Firefox") > -1) {
+        const state = JSON.stringify({ ageThreshold: ageThreshold, verificationMethod: verificationMethod });
+        window.location.href = `${authUrl}/origin-relay/register/?sessionId=${sessionId}&publicKey=${publicKey}&state=${state}`;
+        return;
+      }
+
       const registrationOptions = await getRegistrationOptions(publicKey, sessionId, ageThreshold, verificationMethod);
       const startRegistrationOptions = {
         optionsJSON: registrationOptions
       };
       const registrationResponse = await startRegistration(startRegistrationOptions);
       const response = await verifyRegistration(publicKey, sessionId, registrationResponse);
-      onResult(response.data);
+      onResult(response);
     } catch (error: any) {
       console.log(error);
     } finally {
@@ -45,8 +54,6 @@ export const AgeKeyRegister: React.FC<RegisterProps> = ({ publicKey, sessionId, 
     }
   }
 
-  return (
-    <button onClick={handleRegister} style={defaultButtonStyle}><AgeKeySVG />{isLoading ? <LoadingDots /> : "Register"}</button>
-  )
+  return <button onClick={handleRegister} style={{ ...defaultButtonStyle, ...style }}><AgeKeySVG />{isLoading ? <LoadingDots /> : "Register"}</button>
 }
 

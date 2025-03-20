@@ -238,6 +238,34 @@ Possible error messages include:
 - "Internal server error"
 
 
+## Browser Compatibility
+
+### Firefox Support
+
+Firefox does not currently support related origin requests on WebAuthn. To handle this limitation, the AgeKey components automatically detect Firefox browsers and implement a special flow. The React Hook included in the package demonstrates how to decode the signature. This should process however be handled serverside as your signing secret is required to validate the signature.
+
+1. When a user is on Firefox, they are temporarily redirected to Opale's domain where the WebAuthn ceremony takes place.
+2. After completion, they are redirected back to your application's callback URL with a signature.
+
+Example of handling Firefox redirects post-ceremony:
+
+```jsx
+import { useOpaleSignature } from 'opale-react';
+
+function App() {
+  const { outcome, expiresIn, data } = useOpaleSignature({ signingSecret });
+
+  return (
+    <div>
+        {outcome}
+        <p>{expiresIn && `Expires in ${expiresIn} seconds`}</p>
+        <p>{data && JSON.stringify(data)}</p>
+    </div>
+  )
+}
+```
+
+
 ### Styling
 
 The `style` prop allows custom styling for each AgeKey component. Pass a JavaScript object with CSS properties in camelCase. These styles will be applied to the iframe and button element element.
