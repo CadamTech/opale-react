@@ -12,26 +12,24 @@ export default defineConfig({
       fileName: (format) => `opale-react.${format}.js`
     },
     // sourcemap: 'inline',
-    minify: false, 
+    minify: false,
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      external: ['react', 'react-dom', 'react/jsx-runtime'],
       output: {
         globals: {
           react: 'React',
-          'react-dom': 'ReactDOM'
-        }
-      }
+          'react-dom': 'React-dom',
+          'react/jsx-runtime': 'react/jsx-runtime',
+        },
+      },
     }
   },
   plugins: [
     react({
       jsxRuntime: 'classic'
     }),
-    dts({ 
-      include: ['src'],
-      // rollupTypes: true, // Consolidate .d.ts files
-      insertTypesEntry: true, // Add types field to package.json
-      tsconfigPath: './tsconfig.build.json'
+    dts({
+      tsconfigPath: 'tsconfig.app.json'
     })
   ],
 })
