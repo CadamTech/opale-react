@@ -32,8 +32,7 @@ const agekeyLoaderSvgCircle: CSSProperties = {
 export const AgeKeySVG: React.FunctionComponent = () => {
   return (
     <svg
-      width="30"
-      height="30"
+      height="90%"
       viewBox="0 0 256 272"
       fill="white"
       xmlns="http://www.w3.org/2000/svg"

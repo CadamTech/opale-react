@@ -19,6 +19,7 @@ export type RegisterMessage = 'registered' | ErrorMessage;
 
 export interface RegisterResult {
   message: RegisterMessage;
+  redirectUrl?: string
 }
 
 export type AuthenticateMessage = 'authenticated' | ErrorMessage;
@@ -35,12 +36,14 @@ export type Verifications = {
 export interface AuthenticateResult {
   message: AuthenticateMessage;
   authenticationData: Verifications;
+  redirectUrl?: string
 }
 
 export type UpdateMessage = 'updated' | ErrorMessage;
 export interface UpdateResult {
   message: UpdateMessage;
   authenticationData: Verifications;
+  redirectUrl?: string
 }
 
 

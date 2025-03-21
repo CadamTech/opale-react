@@ -36,8 +36,11 @@ export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verifica
       // Check for Firefox and redirect if needed
       if (window.navigator.userAgent.search("Firefox") > -1) {
         const state = JSON.stringify({ ageThreshold: ageThreshold, verificationMethod: verificationMethod });
-        window.location.href = `${authUrl}/origin-relay/update/?sessionId=${sessionId}&publicKey=${publicKey}&state=${state}`;
-        return;
+        const targetUrl = `${authUrl}/origin-relay/update/?sessionId=${sessionId}&publicKey=${publicKey}&state=${state}`;
+        if (authUrl !== window.location.origin) {
+          window.location.href = targetUrl;
+          return;
+        }
       }
 
       const authenticationnOptions = await getUpdateOptions(publicKey, sessionId, ageThreshold, verificationMethod);

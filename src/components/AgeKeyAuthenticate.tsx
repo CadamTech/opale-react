@@ -33,8 +33,12 @@ export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, style }: Au
 
       // Check for Firefox and redirect if needed
       if (window.navigator.userAgent.search("Firefox") > -1) {
-        window.location.href = `${authUrl}/origin-relay/authenticate/?sessionId=${sessionId}&publicKey=${publicKey}`;
-        return;
+              // Create the target URL
+      const targetUrl = `${authUrl}/origin-relay/authenticate/?sessionId=${sessionId}&publicKey=${publicKey}`;
+        if (authUrl !== window.location.origin) {
+          window.location.href = targetUrl;
+          return;
+        }
       }
 
       const authenticationOptions = await getAuthenticationOptions(publicKey, sessionId);

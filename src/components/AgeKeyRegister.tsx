@@ -36,8 +36,11 @@ export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verifi
       // Check for Firefox and redirect if needed
       if (window.navigator.userAgent.search("Firefox") > -1) {
         const state = JSON.stringify({ ageThreshold: ageThreshold, verificationMethod: verificationMethod });
-        window.location.href = `${authUrl}/origin-relay/register/?sessionId=${sessionId}&publicKey=${publicKey}&state=${state}`;
-        return;
+        const targetUrl = `${authUrl}/origin-relay/register/?sessionId=${sessionId}&publicKey=${publicKey}&state=${state}`;
+        if (authUrl !== window.location.origin) {
+          window.location.href = targetUrl;
+          return;
+        }
       }
 
       const registrationOptions = await getRegistrationOptions(publicKey, sessionId, ageThreshold, verificationMethod);
