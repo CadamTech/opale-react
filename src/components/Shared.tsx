@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react'
 
 export const defaultButtonStyle: CSSProperties = {
-    width: '200px',
+    width: '240px',
     height: '40px',
     position: 'relative',
     fontSize: '17px',

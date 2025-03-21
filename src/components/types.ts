@@ -17,6 +17,8 @@ export type ErrorMessage =
 
 export type RegisterMessage = 'registered' | ErrorMessage;
 
+export type Language = 'en' | 'fr' | 'it';
+
 export interface RegisterResult {
   message: RegisterMessage;
   redirectUrl?: string
@@ -52,6 +54,7 @@ export interface BaseAgeKeyProps {
   publicKey: string;
   sessionId: string;
   style?: React.CSSProperties;
+  language?: Language;
 }
 
 // Ceremony-specific props with typed onResult callbacks

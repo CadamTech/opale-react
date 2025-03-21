@@ -1,15 +1,18 @@
-import React, { JSX, useState } from 'react'
+import React, { JSX, useState, useEffect } from 'react'
 import axios from 'axios';
 import { UpdateProps } from './types'
 import { AuthenticationResponseJSON, startAuthentication } from '@simplewebauthn/browser';
 import { AgeKeySVG, defaultButtonStyle, LoadingDots } from './Shared';
+import transations from '../translation.json';
+
 
 const baseApiUrl = import.meta.env.VITE_OPALE_API_URL;
 const authUrl = import.meta.env.VITE_OPALE_AUTH_URL;
 
 
-export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, style }: UpdateProps): JSX.Element  => {
+export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, style, language}: UpdateProps): JSX.Element  => {
   const [isLoading, setIsLoading] = useState(false);
+  const [text, setText] = useState<string | undefined>(undefined);
 
   async function getUpdateOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
     const url = `${baseApiUrl}/agekey/update-options/${sessionId}/?publicKey=${publicKey}`;
@@ -57,5 +60,13 @@ export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verifica
     }
   }
 
-  return <button onClick={handleUpdate} style={{ ...defaultButtonStyle, ...style }}><AgeKeySVG />{isLoading ? <LoadingDots /> : "Update"}</button>
+  useEffect(()=> {
+      if(!language || (language !== 'fr' && language !== 'it')) {
+        setText(transations[4]?.['en']);
+      } else {
+        setText(transations[4]?.[language]);
+      }
+  }, [language])
+
+  return <button onClick={handleUpdate} style={{ ...defaultButtonStyle, ...style }}><AgeKeySVG />{isLoading ? <LoadingDots /> : text}</button>
 }

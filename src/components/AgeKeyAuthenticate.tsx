@@ -1,14 +1,16 @@
-import React, { JSX, useState } from 'react'
+import React, { JSX, useEffect, useState } from 'react'
 import axios from 'axios';
 import { AuthenticationResponseJSON, startAuthentication } from '@simplewebauthn/browser';
 import { AgeKeySVG, defaultButtonStyle, LoadingDots } from './Shared';
 import { AuthenticateProps } from './types'
+import transations from '../translation.json';
 
 const baseApiUrl = import.meta.env.VITE_OPALE_API_URL;
 const authUrl = import.meta.env.VITE_OPALE_AUTH_URL;
 
-export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, style }: AuthenticateProps): JSX.Element => {
+export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, style, language }: AuthenticateProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
+  const [text, setText] = useState<string | undefined>(undefined);
 
 
   async function getAuthenticationOptions(publicKey: string, sessionId: string) {
@@ -55,5 +57,13 @@ export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, style }: Au
     }
   }
 
-  return <button onClick={handleAuthenticate} style={{ ...defaultButtonStyle, ...style }}><AgeKeySVG />{isLoading ? <LoadingDots /> : "Authenticate"}</button>
+    useEffect(()=> {
+        if(!language || (language !== 'fr' && language !== 'it')) {
+          setText(transations[2]?.['en']);
+        } else {
+          setText(transations[2]?.[language]);
+        }
+    }, [language])
+
+  return <button onClick={handleAuthenticate} style={{ ...defaultButtonStyle, ...style }}><AgeKeySVG />{isLoading ? <LoadingDots /> : text}</button>
 }

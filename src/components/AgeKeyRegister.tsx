@@ -1,14 +1,16 @@
-import React, { JSX, useState } from 'react'
+import React, { JSX, useEffect, useState } from 'react'
 import axios from "axios";
 import { RegisterProps } from './types'
 import { startRegistration, RegistrationResponseJSON  } from '@simplewebauthn/browser';
 import { AgeKeySVG, defaultButtonStyle, LoadingDots } from './Shared';
+import transations from '../translation.json';
 
 const baseApiUrl = import.meta.env.VITE_OPALE_API_URL;
 const authUrl = import.meta.env.VITE_OPALE_AUTH_URL;
 
-export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, style }: RegisterProps): JSX.Element => {
+export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, style, language }: RegisterProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
+  const [text, setText] = useState<string | undefined>(undefined);
 
   async function getRegistrationOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
     const url = `${baseApiUrl}/agekey/registration-options/${sessionId}/?publicKey=${publicKey}`;
@@ -57,6 +59,14 @@ export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verifi
     }
   }
 
-  return <button onClick={handleRegister} style={{ ...defaultButtonStyle, ...style }}><AgeKeySVG />{isLoading ? <LoadingDots /> : "Register"}</button>
+  useEffect(()=> {
+      if(!language || (language !== 'fr' && language !== 'it')) {
+        setText(transations[3]?.['en']);
+      } else {
+        setText(transations[3]?.[language]);
+      }
+  }, [language])
+
+  return <button onClick={handleRegister} style={{ ...defaultButtonStyle, ...style }}><AgeKeySVG />{isLoading ? <LoadingDots /> : text}</button>
 }
 
