@@ -29,3 +29,4 @@ __snapshots__
 .env.prod
 .env.development
 .env.production
+.env.staging

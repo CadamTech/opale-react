@@ -22,7 +22,7 @@ const agekeyIcon: CSSProperties =  {
 const agekeyLoaderSvg: CSSProperties = {
     border: 'none',
     width: '100%',
-    height: '100%'
+    height: '90%'
 }
 
 const agekeyLoaderSvgCircle: CSSProperties = {
@@ -51,7 +51,7 @@ export const AgeKeySVG: React.FunctionComponent = () => {
 export const LoadingDots: React.FunctionComponent  = () => {
   return (
     <svg
-      width="100%"
+      width="90%"
       version="1.1"
       id="L5"
       xmlns="http://www.w3.org/2000/svg"

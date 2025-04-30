@@ -5,14 +5,31 @@ import { AuthenticationResponseJSON, startAuthentication } from '@simplewebauthn
 import { AgeKeySVG, defaultButtonStyle, LoadingDots } from './Shared';
 import transations from '../translation.json';
 
+const baseApiUrlDev = import.meta.env.VITE_OPALE_API_URL_DEV;
+const authUrlDev = import.meta.env.VITE_OPALE_AUTH_URL_DEV;
 
-const baseApiUrl = import.meta.env.VITE_OPALE_API_URL;
-const authUrl = import.meta.env.VITE_OPALE_AUTH_URL;
+const baseApiUrlStage = import.meta.env.VITE_OPALE_API_URL_STAGE
+const authUrlStage = import.meta.env.VITE_OPALE_AUTH_URL_STAGE
 
+const baseApiUrlProd = import.meta.env.VITE_OPALE_API_URL_PROD
+const authUrlProd = import.meta.env.VITE_OPALE_AUTH_URL_PROD
 
 export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, style, language}: UpdateProps): JSX.Element  => {
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState<string | undefined>(undefined);
+
+  // Determine the correct URLs immediately based on publicKey
+  const getEnvironmentUrls = (key: string) => {
+    if (key.startsWith("dev-")) {
+      return { baseApiUrl: baseApiUrlDev, authUrl: authUrlDev };
+    } else if (key.startsWith("staging-")) {
+      return { baseApiUrl: baseApiUrlStage, authUrl: authUrlStage };
+    } else {
+      return { baseApiUrl: baseApiUrlProd, authUrl: authUrlProd };
+    }
+  };
+
+  const { baseApiUrl, authUrl } = getEnvironmentUrls(publicKey);
 
   async function getUpdateOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
     const url = `${baseApiUrl}/agekey/update-options/${sessionId}/?publicKey=${publicKey}`;
@@ -39,7 +56,7 @@ export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verifica
       // Check for Firefox and redirect if needed
       if (window.navigator.userAgent.search("Firefox") > -1) {
         const state = JSON.stringify({ ageThreshold: ageThreshold, verificationMethod: verificationMethod });
-        const targetUrl = `${authUrl}/origin-relay/update/?sessionId=${sessionId}&publicKey=${publicKey}&state=${state}`;
+        const targetUrl = `${authUrl}/origin-relay/update/?sessionId=${sessionId}&publicKey=${publicKey}&state=${encodeURIComponent(state)}`;
         if (authUrl !== window.location.origin) {
           window.location.href = targetUrl;
           return;
