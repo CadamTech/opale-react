@@ -55,6 +55,7 @@ export interface BaseAgeKeyProps {
   sessionId: string;
   style?: React.CSSProperties;
   language?: Language;
+  buttonText?: string;
 }
 
 // Ceremony-specific props with typed onResult callbacks

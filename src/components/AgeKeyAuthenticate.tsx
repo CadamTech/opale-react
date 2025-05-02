@@ -15,7 +15,7 @@ const baseApiUrlProd = import.meta.env.VITE_OPALE_API_URL_PROD
 const authUrlProd = import.meta.env.VITE_OPALE_AUTH_URL_PROD
 
 
-export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, style, language }: AuthenticateProps): JSX.Element => {
+export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, style, language, buttonText }: AuthenticateProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState<string | undefined>(undefined);
 
@@ -76,7 +76,9 @@ export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, style, lang
   }
 
   useEffect(() => {
-    if (!language || (language !== 'fr' && language !== 'it')) {
+    if (buttonText) {
+      setText(buttonText);
+    } else if (!language || (language !== 'fr' && language !== 'it')) {
       setText(transations[2]?.['en']);
     } else {
       setText(transations[2]?.[language]);
