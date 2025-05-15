@@ -9,7 +9,8 @@ export default defineConfig({
       entry: path.resolve(__dirname, "src/index.ts"),
       name: 'OpaleReact',
       formats: ['es', 'cjs'],  // Explicitly define formats
-      fileName: (format) => `opale-react.${format}.js`
+      fileName: (format) => `opale-react.${format}.js`,
+      cssFileName: "style.css"
     },
     // sourcemap: 'inline',
     minify: false,
@@ -20,8 +21,9 @@ export default defineConfig({
           react: 'React',
           'react-dom': 'React-dom',
           'react/jsx-runtime': 'react/jsx-runtime',
-        },
-      }
+        }
+      },
+
     }
   },
   plugins: [

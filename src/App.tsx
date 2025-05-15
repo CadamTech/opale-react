@@ -1,7 +1,8 @@
+// Located './src'
 import React from 'react'
-import { AgeKeyRegister } from './components/AgeKeyRegister'
-import { AgeKeyAuthenticate } from './components/AgeKeyAuthenticate'
-import { AgeKeyUpdate } from './components/AgeKeyUpdate'
+import { AgeKeyRegister } from '../src/components/AgeKeyRegister'
+import { AgeKeyAuthenticate } from '../src/components/AgeKeyAuthenticate'
+import { AgeKeyUpdate } from '../src/components/AgeKeyUpdate'
 
 function App() {
 

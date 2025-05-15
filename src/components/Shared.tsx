@@ -1,27 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Language, StyleAgeKeyProps } from './types';
 import transations from '../translation.json'
-import '../index.css'
-
-const baseApiUrlDev = import.meta.env.VITE_OPALE_API_URL_DEV;
-const authUrlDev = import.meta.env.VITE_OPALE_AUTH_URL_DEV;
-
-const baseApiUrlStage = import.meta.env.VITE_OPALE_API_URL_STAGE
-const authUrlStage = import.meta.env.VITE_OPALE_AUTH_URL_STAGE
-
-const baseApiUrlProd = import.meta.env.VITE_OPALE_API_URL_PROD
-const authUrlProd = import.meta.env.VITE_OPALE_AUTH_URL_PROD
-
-// Determine the correct URLs immediately based on publicKey
-export const getEnvironmentUrls = (key: string) => {
-  if (key.startsWith("dev-")) {
-    return { baseApiUrl: baseApiUrlDev, authUrl: authUrlDev };
-  } else if (key.startsWith("staging-")) {
-    return { baseApiUrl: baseApiUrlStage, authUrl: authUrlStage };
-  } else {
-    return { baseApiUrl: baseApiUrlProd, authUrl: authUrlProd };
-  }
-};
+import { ageKeyStyleContainer, ageKeyStyleContainerHover, ageKeyPlusIcon, ageKeyIcon, ageKeyNumber, ageKeyLoaderContainer, ageKeyLoader} from './style'
 
 const PlusIconSVG: React.FunctionComponent = () => {
   return <svg
@@ -30,7 +10,7 @@ const PlusIconSVG: React.FunctionComponent = () => {
     viewBox="0 0 11 11"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className='agekey-plus-icon'>
+    style={{...ageKeyPlusIcon}}>
     <path d="M4.35625 8.85V6.69375H2.14375C1.43125 6.69375 0.85 6.1125 0.85 5.4C0.85 4.6875 1.43125 4.10625 2.14375 4.10625H4.35625V1.95C4.35625 1.21875 4.95625 0.618749 5.6875 0.618749C6.41875 0.618749 7.01875 1.21875 7.01875 1.95V4.10625H9.23125C9.94375 4.10625 10.525 4.6875 10.525 5.4C10.525 6.1125 9.94375 6.69375 9.23125 6.69375H7.01875V8.85C7.01875 9.58125 6.41875 10.1812 5.6875 10.1812C4.95625 10.1812 4.35625 9.58125 4.35625 8.85Z" fill="#3700C1" />
   </svg>
 
@@ -38,8 +18,8 @@ const PlusIconSVG: React.FunctionComponent = () => {
 
 const AgeKeyIconSVG: React.FunctionComponent<{ age?: number }> = ({ age }) => {
   return (
-    <div className='agekey-icon'>
-      <span className='agekey-number'>{age}</span>
+    <div style={{...ageKeyIcon}}>
+      <span style={{...ageKeyNumber}}>{age}</span>
       <PlusIconSVG />
       <svg
         width="24"
@@ -69,6 +49,8 @@ const AgeKeyTextSVG: React.FunctionComponent = () => {
 
 export const AgeKeyStyleComponent: React.FC<StyleAgeKeyProps> = ({ language, ageThreshold, ceremony, isLoading }) => {
   const [text, setText] = useState("")
+  const [dynamicStyle, setDynamicStyle] = useState({...ageKeyStyleContainer})
+
 
   useEffect(() => {
     if (!language || language !== 'fr') {
@@ -78,11 +60,13 @@ export const AgeKeyStyleComponent: React.FC<StyleAgeKeyProps> = ({ language, age
     }
   }, [language])
 
-  return <div className='agekey-style-container'>
+  return <div style={{...dynamicStyle}} onMouseEnter={()=>setDynamicStyle({...ageKeyStyleContainer, ...ageKeyStyleContainerHover})} onMouseLeave={()=>setDynamicStyle({...ageKeyStyleContainer})}>
     {text}
     <AgeKeyIconSVG age={ageThreshold || 18} />
     <AgeKeyTextSVG />
-    {isLoading && <div className='agekey-loader-container'><span className="agekey-loader"></span></div>}
+    {isLoading && <div style={{...ageKeyLoaderContainer}}>
+      <span style={{...ageKeyLoader}}/>
+    </div>}
   </div>
 }
 
