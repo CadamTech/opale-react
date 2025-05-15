@@ -80,5 +80,5 @@ export const ageKeyLoader: CSSProperties = {
   borderTop: '3px solid #FFF',
   borderRight: '3px solid transparent',
   boxSizing: 'border-box',
-  animation: 'rotation 1s linear infinite',
+  animation: `spin 1s linear infinite`
 }

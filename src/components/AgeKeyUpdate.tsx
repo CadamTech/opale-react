@@ -1,14 +1,19 @@
-import React, { JSX, useState } from 'react'
+import React, { JSX, useEffect, useState } from 'react'
 import axios from 'axios';
 import { UpdateProps } from './types'
 import { AuthenticationResponseJSON, startAuthentication } from '@simplewebauthn/browser';
-import { AgeKeyStyleComponent } from './Shared';
-import { useEnvironmentUrls } from '../hooks/useEnvironmentUrl';
+import { AgeKeyStyleComponent, getEnvironmentUrls } from './Shared';
 import { ageKeyButton } from "./style"
 
 export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, language }: UpdateProps): JSX.Element => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { baseApiUrl, authUrl } = useEnvironmentUrls(publicKey)
+  const [isLoading, setIsLoading] = useState(true);
+  const [{baseApiUrl, authUrl }, setEnvironmentUrls] = useState({baseApiUrl: "", authUrl: ""})
+
+  useEffect(() => {
+    if (!publicKey) return
+    setEnvironmentUrls(getEnvironmentUrls(publicKey))
+    setIsLoading(false)
+  }, [publicKey])
 
   async function getUpdateOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
     const url = `${baseApiUrl}/agekey/update-options/${sessionId}/?publicKey=${publicKey}`;
@@ -56,7 +61,7 @@ export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verifica
     }
   }
 
-  return <button style={{...ageKeyButton}} onClick={handleUpdate}>
+  return <button style={{...ageKeyButton}} onClick={handleUpdate} disabled={isLoading}>
     <AgeKeyStyleComponent ceremony='update' language={language} ageThreshold={ageThreshold} isLoading={isLoading}/>
   </button>
 }

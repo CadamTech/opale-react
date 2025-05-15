@@ -1,14 +1,19 @@
-import React, { JSX, useState } from 'react'
+import React, { JSX, useEffect, useState } from 'react'
 import axios from 'axios';
 import { AuthenticateProps } from './types'
 import { AuthenticationResponseJSON, startAuthentication } from '@simplewebauthn/browser';
-import { AgeKeyStyleComponent } from './Shared';
-import { useEnvironmentUrls } from "../hooks/useEnvironmentUrl"
+import { AgeKeyStyleComponent, getEnvironmentUrls } from './Shared';
 import { ageKeyButton } from "./style"
 
 export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, ageThreshold, language }: AuthenticateProps): JSX.Element => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { baseApiUrl, authUrl } = useEnvironmentUrls(publicKey)
+  const [isLoading, setIsLoading] = useState(true);
+  const [{baseApiUrl, authUrl }, setEnvironmentUrls] = useState({baseApiUrl: "", authUrl: ""})
+
+  useEffect(() => {
+    if (!publicKey) return
+    setEnvironmentUrls(getEnvironmentUrls(publicKey))
+    setIsLoading(false)
+  }, [publicKey])
 
   async function getAuthenticationOptions(publicKey: string, sessionId: string) {
     const url = `${baseApiUrl}/agekey/authentication-options/${sessionId}/?publicKey=${publicKey}`;
@@ -26,9 +31,6 @@ export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, ageThreshol
 
   async function handleAuthenticate(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-      setIsLoading(true);
-  setTimeout(() => setIsLoading(false), 10000)
-return
     try {
       setIsLoading(true);
 
@@ -56,7 +58,7 @@ return
     }
   }
 
-  return <button style={{...ageKeyButton}} onClick={handleAuthenticate} >
+  return <button style={{...ageKeyButton}} onClick={handleAuthenticate} disabled={isLoading}>
     <AgeKeyStyleComponent ceremony='authenticate' language={language} ageThreshold={ageThreshold} isLoading={isLoading}/>
   </button>
 }

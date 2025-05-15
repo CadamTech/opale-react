@@ -1,14 +1,19 @@
-import React, { JSX, useState } from 'react'
+import React, { JSX, useEffect, useState } from 'react'
 import axios from "axios";
 import { RegisterProps } from './types'
 import { startRegistration, RegistrationResponseJSON } from '@simplewebauthn/browser';
-import { AgeKeyStyleComponent } from './Shared';
-import { useEnvironmentUrls } from "../hooks/useEnvironmentUrl"
+import { AgeKeyStyleComponent, getEnvironmentUrls } from './Shared';
 import { ageKeyButton } from "./style"
 
 export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, language }: RegisterProps): JSX.Element => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { baseApiUrl, authUrl } = useEnvironmentUrls(publicKey)
+  const [isLoading, setIsLoading] = useState(true);
+  const [{baseApiUrl, authUrl }, setEnvironmentUrls] = useState({baseApiUrl: "", authUrl: ""})
+
+  useEffect(() => {
+    if (!publicKey) return
+    setEnvironmentUrls(getEnvironmentUrls(publicKey))
+    setIsLoading(false)
+  }, [publicKey])
 
   async function getRegistrationOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
     const url = `${baseApiUrl}/agekey/registration-options/${sessionId}/?publicKey=${publicKey}`;
@@ -56,7 +61,7 @@ export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verifi
     }
   }
 
-  return <button style={{...ageKeyButton}} onClick={handleRegister} >
+  return <button style={{...ageKeyButton}} onClick={handleRegister} disabled={isLoading}>
     <AgeKeyStyleComponent language={language} ageThreshold={ageThreshold} ceremony={'register'} isLoading={isLoading}/>
   </button>
 }

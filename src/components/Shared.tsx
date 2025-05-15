@@ -3,6 +3,26 @@ import { Language, StyleAgeKeyProps } from './types';
 import transations from '../translation.json'
 import { ageKeyStyleContainer, ageKeyStyleContainerHover, ageKeyPlusIcon, ageKeyIcon, ageKeyNumber, ageKeyLoaderContainer, ageKeyLoader} from './style'
 
+const baseApiUrlDev = import.meta.env.VITE_OPALE_API_URL_DEV;
+const authUrlDev = import.meta.env.VITE_OPALE_AUTH_URL_DEV;
+
+const baseApiUrlStage = import.meta.env.VITE_OPALE_API_URL_STAGE
+const authUrlStage = import.meta.env.VITE_OPALE_AUTH_URL_STAGE
+
+const baseApiUrlProd = import.meta.env.VITE_OPALE_API_URL_PROD
+const authUrlProd = import.meta.env.VITE_OPALE_AUTH_URL_PROD
+
+
+export function getEnvironmentUrls (publicKey: string): {baseApiUrl: string, authUrl: string} {
+    if (publicKey.startsWith("dev-")) {
+      return { baseApiUrl: baseApiUrlDev, authUrl: authUrlDev };
+    } else if (publicKey.startsWith("staging-")) {
+      return { baseApiUrl: baseApiUrlStage, authUrl: authUrlStage };
+    } else {
+      return { baseApiUrl: baseApiUrlProd, authUrl: authUrlProd };
+    }
+}
+
 const PlusIconSVG: React.FunctionComponent = () => {
   return <svg
     width="5"
