@@ -1,11 +1,10 @@
 {
   "name": "opale-react",
-  "version": "0.1.0",
+  "version": "0.1.21",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build-dev": "tsc && vite build --mode development",
-    "build": "tsc && vite build --mode production",
+    "build": "tsc && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

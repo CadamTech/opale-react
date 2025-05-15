@@ -1,14 +1,19 @@
-import React, { JSX, useState } from 'react'
+import React, { JSX, useEffect, useState } from 'react'
 import axios from "axios";
 import { RegisterProps } from './types'
-import { startRegistration, RegistrationResponseJSON  } from '@simplewebauthn/browser';
-import { AgeKeySVG, defaultButtonStyle, LoadingDots } from './Shared';
+import { startRegistration, RegistrationResponseJSON } from '@simplewebauthn/browser';
+import { AgeKeyStyleComponent, getEnvironmentUrls } from './Shared';
+import { ageKeyButton } from "./style"
 
-const baseApiUrl = import.meta.env.VITE_OPALE_API_URL;
-const authUrl = import.meta.env.VITE_OPALE_AUTH_URL;
+export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, language }: RegisterProps): JSX.Element => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [{baseApiUrl, authUrl }, setEnvironmentUrls] = useState({baseApiUrl: "", authUrl: ""})
 
-export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, style }: RegisterProps): JSX.Element => {
-  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    if (!publicKey) return
+    setEnvironmentUrls(getEnvironmentUrls(publicKey))
+    setIsLoading(false)
+  }, [publicKey])
 
   async function getRegistrationOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
     const url = `${baseApiUrl}/agekey/registration-options/${sessionId}/?publicKey=${publicKey}`;
@@ -27,7 +32,6 @@ export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verifi
     return data;
   };
 
-
   async function handleRegister(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     try {
@@ -36,8 +40,11 @@ export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verifi
       // Check for Firefox and redirect if needed
       if (window.navigator.userAgent.search("Firefox") > -1) {
         const state = JSON.stringify({ ageThreshold: ageThreshold, verificationMethod: verificationMethod });
-        window.location.href = `${authUrl}/origin-relay/register/?sessionId=${sessionId}&publicKey=${publicKey}&state=${state}`;
-        return;
+        const targetUrl = `${authUrl}/origin-relay/register/?sessionId=${sessionId}&publicKey=${publicKey}&state=${encodeURIComponent(state)}`;
+        if (authUrl !== window.location.origin) {
+          window.location.href = targetUrl;
+          return;
+        }
       }
 
       const registrationOptions = await getRegistrationOptions(publicKey, sessionId, ageThreshold, verificationMethod);
@@ -54,6 +61,8 @@ export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verifi
     }
   }
 
-  return <button onClick={handleRegister} style={{ ...defaultButtonStyle, ...style }}><AgeKeySVG />{isLoading ? <LoadingDots /> : "Register"}</button>
+  return <button style={{...ageKeyButton}} onClick={handleRegister} disabled={isLoading}>
+    <AgeKeyStyleComponent language={language} ageThreshold={ageThreshold} ceremony={'register'} isLoading={isLoading}/>
+  </button>
 }
 

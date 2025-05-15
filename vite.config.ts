@@ -20,8 +20,9 @@ export default defineConfig({
           react: 'React',
           'react-dom': 'React-dom',
           'react/jsx-runtime': 'react/jsx-runtime',
-        },
+        }
       },
+
     }
   },
   plugins: [

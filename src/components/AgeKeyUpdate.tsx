@@ -1,15 +1,19 @@
-import React, { JSX, useState } from 'react'
+import React, { JSX, useEffect, useState } from 'react'
 import axios from 'axios';
 import { UpdateProps } from './types'
 import { AuthenticationResponseJSON, startAuthentication } from '@simplewebauthn/browser';
-import { AgeKeySVG, defaultButtonStyle, LoadingDots } from './Shared';
+import { AgeKeyStyleComponent, getEnvironmentUrls } from './Shared';
+import { ageKeyButton } from "./style"
 
-const baseApiUrl = import.meta.env.VITE_OPALE_API_URL;
-const authUrl = import.meta.env.VITE_OPALE_AUTH_URL;
+export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, language }: UpdateProps): JSX.Element => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [{baseApiUrl, authUrl }, setEnvironmentUrls] = useState({baseApiUrl: "", authUrl: ""})
 
-
-export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, style }: UpdateProps): JSX.Element  => {
-  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    if (!publicKey) return
+    setEnvironmentUrls(getEnvironmentUrls(publicKey))
+    setIsLoading(false)
+  }, [publicKey])
 
   async function getUpdateOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
     const url = `${baseApiUrl}/agekey/update-options/${sessionId}/?publicKey=${publicKey}`;
@@ -36,8 +40,11 @@ export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verifica
       // Check for Firefox and redirect if needed
       if (window.navigator.userAgent.search("Firefox") > -1) {
         const state = JSON.stringify({ ageThreshold: ageThreshold, verificationMethod: verificationMethod });
-        window.location.href = `${authUrl}/origin-relay/update/?sessionId=${sessionId}&publicKey=${publicKey}&state=${state}`;
-        return;
+        const targetUrl = `${authUrl}/origin-relay/update/?sessionId=${sessionId}&publicKey=${publicKey}&state=${encodeURIComponent(state)}`;
+        if (authUrl !== window.location.origin) {
+          window.location.href = targetUrl;
+          return;
+        }
       }
 
       const authenticationnOptions = await getUpdateOptions(publicKey, sessionId, ageThreshold, verificationMethod);
@@ -54,5 +61,7 @@ export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verifica
     }
   }
 
-  return <button onClick={handleUpdate} style={{ ...defaultButtonStyle, ...style }}><AgeKeySVG />{isLoading ? <LoadingDots /> : "Update"}</button>
+  return <button style={{...ageKeyButton}} onClick={handleUpdate} disabled={isLoading}>
+    <AgeKeyStyleComponent ceremony='update' language={language} ageThreshold={ageThreshold} isLoading={isLoading}/>
+  </button>
 }

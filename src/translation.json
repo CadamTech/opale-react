@@ -1,0 +1,14 @@
+{
+  "authenticate": {
+    "fr": "utiliser mon",
+    "en": "use my"
+  },
+  "register": {
+    "fr": "créer mon",
+    "en": "create my"
+  },
+  "update": {
+    "fr": "mettre à niveau mon",
+    "en": "upgrade my"
+  }
+}
