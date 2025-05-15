@@ -1,35 +1,14 @@
-import React, { JSX, useEffect, useState } from 'react'
+import React, { JSX, useState } from 'react'
 import axios from "axios";
 import { RegisterProps } from './types'
-import { startRegistration, RegistrationResponseJSON  } from '@simplewebauthn/browser';
-import { AgeKeySVG, defaultButtonStyle, LoadingDots } from './Shared';
-import transations from '../translation.json';
+import { startRegistration, RegistrationResponseJSON } from '@simplewebauthn/browser';
+import { AgeKeyStyleComponent, getEnvironmentUrls } from './Shared';
 
-const baseApiUrlDev = import.meta.env.VITE_OPALE_API_URL_DEV;
-const authUrlDev = import.meta.env.VITE_OPALE_AUTH_URL_DEV;
 
-const baseApiUrlStage = import.meta.env.VITE_OPALE_API_URL_STAGE
-const authUrlStage = import.meta.env.VITE_OPALE_AUTH_URL_STAGE
-
-const baseApiUrlProd = import.meta.env.VITE_OPALE_API_URL_PROD
-const authUrlProd = import.meta.env.VITE_OPALE_AUTH_URL_PROD
-
-export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, style, language, buttonText }: RegisterProps): JSX.Element => {
+export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, language }: RegisterProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
-  const [text, setText] = useState<string | undefined>(undefined);
 
-  // Determine the correct URLs immediately based on publicKey
-  const getEnvironmentUrls = (key: string) => {
-    if (key.startsWith("dev-")) {
-      return { baseApiUrl: baseApiUrlDev, authUrl: authUrlDev };
-    } else if (key.startsWith("staging-")) {
-      return { baseApiUrl: baseApiUrlStage, authUrl: authUrlStage };
-    } else {
-      return { baseApiUrl: baseApiUrlProd, authUrl: authUrlProd };
-    }
-  };
-
-  const { baseApiUrl, authUrl } = getEnvironmentUrls(publicKey);
+  const { baseApiUrl, authUrl } = getEnvironmentUrls(publicKey)
 
   async function getRegistrationOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
     const url = `${baseApiUrl}/agekey/registration-options/${sessionId}/?publicKey=${publicKey}`;
@@ -73,20 +52,13 @@ export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verifi
     } catch (error: any) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {setIsLoading(false), 500})
+      // setIsLoading(false);
     }
   }
 
-  useEffect(()=> {
-      if (buttonText) {
-      setText(buttonText);
-      } else if(!language || (language !== 'fr' && language !== 'it')) {
-        setText(transations[3]?.['en']);
-      } else {
-        setText(transations[3]?.[language]);
-      }
-  }, [language])
-
-  return <button onClick={handleRegister} style={{ ...defaultButtonStyle, ...style }}><AgeKeySVG />{isLoading ? <LoadingDots /> : text}</button>
+  return <button className='agekey-button' onClick={handleRegister} >
+    <AgeKeyStyleComponent language={language} ageThreshold={ageThreshold} ceremony={'register'} isLoading={isLoading}/>
+  </button>
 }
 

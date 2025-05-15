@@ -48,7 +48,7 @@ function App() {
 
 
   return (
-    <div>
+    <>
       {/* Registration component */}
       <AgeKeyRegister
         publicKey="your-public-key-here"
@@ -57,7 +57,7 @@ function App() {
         ageThreshold={18} // Optional - Defaults to 18
         onResult={handleRegistration}
       />
-    </div>
+    </>
   );
 };
 
@@ -117,14 +117,14 @@ function App() {
   };
 
   return (
-    <div>
+    <>
       {/* Authentication component */}
       <AgeKeyAuthenticate
         publicKey="your-public-key-here"
         sessionId="unique-session-id"
         onResult={handleAuthentcation}
       />
-    </div>
+    </>
   );
 };
 
@@ -184,7 +184,7 @@ function App() {
 
 
   return (
-    <div>
+    <>
       {/* Update component */}
       <AgeKeyUpdate
         publicKey="your-public-key-here"
@@ -193,7 +193,7 @@ function App() {
         ageThreshold={18} // Optional - Defaults to 18
         onResult={handleUpdate}
       />
-    </div>
+    </>
   );
 };
 
@@ -263,25 +263,4 @@ function App() {
     </div>
   )
 }
-```
-
-
-### Styling
-
-The `style` prop allows custom styling for each AgeKey component. Pass a JavaScript object with CSS properties in camelCase. These styles will be applied to the iframe and button element element.
-
-## Example:
-
-```tsx
-<AgeKeyAuthenticate
-  publicKey="your-public-key-here"
-  sessionId="unique-session-id"
-  onResult={handleRegistration}
-  style={{
-    backgroundColor: 'green',
-    width: '600px',
-    height: '30px',
-    borderRadius: '0'
-  }}
-/>
 ```

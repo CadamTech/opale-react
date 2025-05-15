@@ -1,36 +1,15 @@
-import React, { JSX, useEffect, useState } from 'react'
+import React, { JSX, useState } from 'react'
 import axios from 'axios';
 import { AuthenticateProps } from './types'
 import { AuthenticationResponseJSON, startAuthentication } from '@simplewebauthn/browser';
-import { AgeKeySVG, defaultButtonStyle, LoadingDots } from './Shared';
-import transations from '../translation.json';
-
-const baseApiUrlDev = import.meta.env.VITE_OPALE_API_URL_DEV;
-const authUrlDev = import.meta.env.VITE_OPALE_AUTH_URL_DEV;
-
-const baseApiUrlStage = import.meta.env.VITE_OPALE_API_URL_STAGE
-const authUrlStage = import.meta.env.VITE_OPALE_AUTH_URL_STAGE
-
-const baseApiUrlProd = import.meta.env.VITE_OPALE_API_URL_PROD
-const authUrlProd = import.meta.env.VITE_OPALE_AUTH_URL_PROD
+import { AgeKeyStyleComponent } from './Shared';
+import { getEnvironmentUrls } from './Shared';
 
 
-export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, style, language, buttonText }: AuthenticateProps): JSX.Element => {
+export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, ageThreshold, language }: AuthenticateProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
-  const [text, setText] = useState<string | undefined>(undefined);
 
-  // Determine the correct URLs immediately based on publicKey
-  const getEnvironmentUrls = (key: string) => {
-    if (key.startsWith("dev-")) {
-      return { baseApiUrl: baseApiUrlDev, authUrl: authUrlDev };
-    } else if (key.startsWith("staging-")) {
-      return { baseApiUrl: baseApiUrlStage, authUrl: authUrlStage };
-    } else {
-      return { baseApiUrl: baseApiUrlProd, authUrl: authUrlProd };
-    }
-  };
-
-  const { baseApiUrl, authUrl } = getEnvironmentUrls(publicKey);
+  const { baseApiUrl, authUrl } = getEnvironmentUrls(publicKey)
 
   async function getAuthenticationOptions(publicKey: string, sessionId: string) {
     const url = `${baseApiUrl}/agekey/authentication-options/${sessionId}/?publicKey=${publicKey}`;
@@ -75,15 +54,7 @@ export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, style, lang
     }
   }
 
-  useEffect(() => {
-    if (buttonText) {
-      setText(buttonText);
-    } else if (!language || (language !== 'fr' && language !== 'it')) {
-      setText(transations[2]?.['en']);
-    } else {
-      setText(transations[2]?.[language]);
-    }
-  }, [language])
-
-  return <button onClick={handleAuthenticate} style={{ ...defaultButtonStyle, ...style }}><AgeKeySVG />{isLoading ? <LoadingDots /> : text}</button>
+  return <button className='agekey-button' onClick={handleAuthenticate} >
+    <AgeKeyStyleComponent ceremony='authenticate' language={language} ageThreshold={ageThreshold} isLoading={isLoading}/>
+  </button>
 }

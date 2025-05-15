@@ -1,25 +1,14 @@
-[
-    {
-        "sheetName": "Opale React"
-    },
-    {
-        "fr": "fr",
-        "en": "en",
-        "it": "it"
-    },
-    {
-        "fr": "J'utilise mon AgeKey",
-        "en": "Use My AgeKey",
-        "it": "Usa il mio AgeKey"
-    },
-    {
-        "fr": "Créer mon AgeKey ",
-        "en": "Create my AgeKey",
-        "it": "Crea la mia AgeKey"
-    },
-    {
-        "fr": "Mettre à jour mon AgeKey",
-        "en": "Update my AgeKey",
-        "it": "Aggiorna il mio AgeKey"
-    }
-]
+{
+  "authenticate": {
+    "fr": "utiliser mon",
+    "en": "use my"
+  },
+  "register": {
+    "fr": "créer mon",
+    "en": "create my"
+  },
+  "update": {
+    "fr": "mettre à niveau mon",
+    "en": "upgrade my"
+  }
+}

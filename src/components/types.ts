@@ -1,5 +1,3 @@
-import React from 'react';
-
 // Common types
 export type Ceremony = 'register' | 'authenticate' | 'update';
 export type VerificationMethod = "docScan" | "ageEstimation" | "digitalId" | "creditCard" | "mobile" | "ftn" | "swedishBankId" | "mitId" | "laWallet" | "socialSecurityNumber" | "usFloridaHb3" | "address" | "emailDirectCheck" | "doubleAnonymity"
@@ -17,7 +15,7 @@ export type ErrorMessage =
 
 export type RegisterMessage = 'registered' | ErrorMessage;
 
-export type Language = 'en' | 'fr' | 'it';
+export type Language = 'en' | 'fr';
 
 export interface RegisterResult {
   message: RegisterMessage;
@@ -48,31 +46,34 @@ export interface UpdateResult {
   redirectUrl?: string
 }
 
-
 // Base props interface
 export interface BaseAgeKeyProps {
   publicKey: string;
   sessionId: string;
-  style?: React.CSSProperties;
+  ageThreshold?: number;
   language?: Language;
-  buttonText?: string;
+}
+
+export interface StyleAgeKeyProps {
+  ceremony: Ceremony;
+  ageThreshold?: number;
+  language?: Language;
+  isLoading: boolean;
 }
 
 // Ceremony-specific props with typed onResult callbacks
-export interface RegisterProps extends BaseAgeKeyProps {
-  verificationMethod: VerificationMethod;
-  ageThreshold?: number;
-  onResult: (data: RegisterResult) => void;
+export interface AuthenticateProps extends BaseAgeKeyProps{
+  onResult: (result: AuthenticateResult) => void;
 }
 
-export interface AuthenticateProps extends BaseAgeKeyProps {
-  onResult: (data: AuthenticateResult) => void;
+export interface RegisterProps  extends BaseAgeKeyProps{
+  verificationMethod: VerificationMethod;
+  onResult: (result: RegisterResult) => void;
 }
 
-export interface UpdateProps extends BaseAgeKeyProps {
+export interface UpdateProps extends BaseAgeKeyProps{
   verificationMethod: VerificationMethod;
-  ageThreshold?: number;
-  onResult: (data: UpdateResult) => void;
+  onResult: (result: UpdateResult) => void;
 }
 
 export type Outcome = "pending" | "signatureMismatch" | "timestampExpired" | "verificationFailed" | "success"
