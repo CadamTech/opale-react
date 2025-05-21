@@ -1,19 +1,19 @@
-import React, { JSX, useEffect, useState } from 'react'
+import React, { JSX, useEffect, useState } from 'react';
 import axios from 'axios';
-import { AuthenticateProps } from './types'
+import { AuthenticateProps } from './types';
 import { AuthenticationResponseJSON, startAuthentication } from '@simplewebauthn/browser';
 import { AgeKeyStyleComponent, getEnvironmentUrls } from './Shared';
-import { ageKeyButton } from "./style"
+import { ageKeyButton } from "./style";
 
 export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, ageThreshold, language }: AuthenticateProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(true);
-  const [{baseApiUrl, authUrl }, setEnvironmentUrls] = useState({baseApiUrl: "", authUrl: ""})
+  const [{baseApiUrl, authUrl }, setEnvironmentUrls] = useState({baseApiUrl: "", authUrl: ""});
 
   useEffect(() => {
-    if (!publicKey) return
-    setEnvironmentUrls(getEnvironmentUrls(publicKey))
-    setIsLoading(false)
-  }, [publicKey])
+    if (!publicKey || !sessionId) return
+    setEnvironmentUrls(getEnvironmentUrls(publicKey));
+    setIsLoading(false);
+  }, [publicKey, sessionId]);
 
   async function getAuthenticationOptions(publicKey: string, sessionId: string) {
     const url = `${baseApiUrl}/agekey/authentication-options/${sessionId}/?publicKey=${publicKey}`;
@@ -26,7 +26,7 @@ export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, ageThreshol
     const { data } = await axios.post(url, {
       authenticationResponse: authenticationResponse,
     });
-    return data
+    return data;
   };
 
   async function handleAuthenticate(e: React.MouseEvent<HTMLButtonElement>) {
@@ -59,6 +59,6 @@ export const AgeKeyAuthenticate = ({ publicKey, sessionId, onResult, ageThreshol
   }
 
   return <button style={{...ageKeyButton}} onClick={handleAuthenticate} disabled={isLoading}>
-    <AgeKeyStyleComponent ceremony='authenticate' language={language} ageThreshold={ageThreshold} isLoading={isLoading}/>
+    <AgeKeyStyleComponent ceremony='authenticate' language={language || 'en'} ageThreshold={ageThreshold || 18} isLoading={isLoading}/>
   </button>
 }

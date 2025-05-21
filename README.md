@@ -25,7 +25,7 @@ Component for AgeKey registration with age verification.
 | sessionId | string | Yes | Unique session identifier |
 | verificationMethod | 'ageEstimation' \| 'docScan' \| 'digitalId' \| 'creditCard' | Yes | The verification method used |
 | ageThreshold | number | No | Age threshold for verification (defaults to 18) |
-| onResult | (result: RegisterResult) => any | Yes | Callback function called with verification results |
+| onResult | (result: RegisterResult) => void | Yes | Callback function called with verification results |
 
 #### Example
 
@@ -64,11 +64,7 @@ function App() {
 export default App;
 ```
 
-## Response Types
-
-The `onResult` callback receives one of the following result types:
-
-### Registration Result
+### Registration Result response example
 
 ```typescript
 {
@@ -87,7 +83,7 @@ Component for authenticating previously registered AgeKey.
 |------|------|----------|-------------|
 | publicKey | string | Yes | Your Opale public key |
 | sessionId | string | Yes | Unique session identifier |
-| onResult | (result: AuthenticateResult) => any | Yes | Callback function called with authentication results |
+| onResult | (result: AuthenticateResult) => void | Yes | Callback function called with authentication results |
 
 #### Example
 
@@ -131,7 +127,7 @@ function App() {
 export default App;
 ```
 
-### Authentication Result Example
+### Authentication Result response example
 
 ```typescript
 {
@@ -162,7 +158,7 @@ Component for adding new verifcation to existing AgeKey.
 | sessionId | string | Yes | Unique session identifier |
 | verificationMethod | 'ageEstimation' \| 'docScan' \| 'digitalId' \| 'creditCard' | Yes | The verification method used |
 | ageThreshold | number | No | Age threshold for verification (defaults to 18) |
-| onResult | (result: RegisterResult) => any | Yes | Callback function called with verification results |
+| onResult | (result: RegisterResult) => void | Yes | Callback function called with verification results |
 
 #### Example
 
@@ -200,7 +196,7 @@ function App() {
 export default App;
 ```
 
-### Update Result Example
+### Update Result response example
 
 ```typescript
 {
@@ -219,6 +215,60 @@ export default App;
       date: "2025-02-28"
     }
   }
+}
+```
+
+
+### Test AgeKey
+
+Component for testing new AgeKey.
+
+#### Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| publicKey | string | Yes | Your Opale public key |
+| sessionId | string | Yes | Unique session identifier |
+| onResult | (result: TestResult) => void | Yes | Callback function called with verification results |
+
+#### Example
+
+```jsx
+import { AgeKeyTest, TestResult } from "opale-react";
+
+function App() {
+
+  const handleTest = (result: TestResult) => {
+    console.log('Update result:', result);
+
+    if (result.message === 'validated') {
+      // Handle successful update
+      console.log('AgeKey successfully validated');
+      return true;
+    };
+    return false
+  };
+
+  return (
+    <>
+      {/* Test component */}
+      <AgeKeyTest
+        onResult={handleTest}
+        publicKey="your-public-key-here"
+        sessionId="unique-session-id"
+        language={language}/>
+    </>
+  );
+};
+
+export default App;
+```
+
+### Test Result response example
+
+```typescript
+{
+  message: 'validated'
 }
 ```
 

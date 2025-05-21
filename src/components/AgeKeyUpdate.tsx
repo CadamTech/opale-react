@@ -1,19 +1,19 @@
-import React, { JSX, useEffect, useState } from 'react'
+import React, { JSX, useEffect, useState } from 'react';
 import axios from 'axios';
-import { UpdateProps } from './types'
+import { UpdateProps } from './types';
 import { AuthenticationResponseJSON, startAuthentication } from '@simplewebauthn/browser';
 import { AgeKeyStyleComponent, getEnvironmentUrls } from './Shared';
-import { ageKeyButton } from "./style"
+import { ageKeyButton } from "./style";
 
 export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, language }: UpdateProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(true);
-  const [{baseApiUrl, authUrl }, setEnvironmentUrls] = useState({baseApiUrl: "", authUrl: ""})
+  const [{baseApiUrl, authUrl }, setEnvironmentUrls] = useState({baseApiUrl: "", authUrl: ""});
 
   useEffect(() => {
-    if (!publicKey) return
-    setEnvironmentUrls(getEnvironmentUrls(publicKey))
-    setIsLoading(false)
-  }, [publicKey])
+    if (!publicKey || !sessionId) return
+    setEnvironmentUrls(getEnvironmentUrls(publicKey));
+    setIsLoading(false);
+  }, [publicKey, sessionId]);
 
   async function getUpdateOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
     const url = `${baseApiUrl}/agekey/update-options/${sessionId}/?publicKey=${publicKey}`;
@@ -45,7 +45,7 @@ export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verifica
           window.location.href = targetUrl;
           return;
         }
-      }
+      };
 
       const authenticationnOptions = await getUpdateOptions(publicKey, sessionId, ageThreshold, verificationMethod);
       const startAuthenticationOptions = {
@@ -58,10 +58,10 @@ export const AgeKeyUpdate = ({ publicKey, sessionId, ageThreshold = 18, verifica
       console.log(error);
     } finally {
       setIsLoading(false);
-    }
-  }
+    };
+  };
 
   return <button style={{...ageKeyButton}} onClick={handleUpdate} disabled={isLoading}>
-    <AgeKeyStyleComponent ceremony='update' language={language} ageThreshold={ageThreshold} isLoading={isLoading}/>
+    <AgeKeyStyleComponent ceremony='update' language={language || 'en'} ageThreshold={ageThreshold || 18} isLoading={isLoading}/>
   </button>
-}
+};

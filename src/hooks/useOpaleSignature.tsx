@@ -17,12 +17,12 @@ export const useOpaleSignature = ({signingSecret}: {signingSecret: string}): Cal
       if (!sessionId || !timestamp || !result || !signature) {
         setOutcome('pending');
         return;
-      }
+      };
 
       if (result !== 'ok') {
         setOutcome('verificationFailed');
         return;
-      }
+      };
 
       try {
         // Check if the timestamp is older than 3 minutes
@@ -36,7 +36,7 @@ export const useOpaleSignature = ({signingSecret}: {signingSecret: string}): Cal
         if (timestampExpiresIn < 0) {
           setOutcome('timestampExpired');
           return;
-        }
+        };
         
         const calculatedSignature = await calculateSignature(
           sessionId, 
@@ -47,7 +47,7 @@ export const useOpaleSignature = ({signingSecret}: {signingSecret: string}): Cal
         
         if (calculatedSignature === signature) {
           setOutcome('success');
-          const encodedData = url.searchParams.get('data') || ''
+          const encodedData = url.searchParams.get('data') || '';
           const decodedData = decodeURIComponent(encodedData ?? '');
           if (decodedData !== '') {
                  const data = JSON.parse(decodedData);
@@ -55,10 +55,10 @@ export const useOpaleSignature = ({signingSecret}: {signingSecret: string}): Cal
           }
         } else {
           setOutcome('signatureMismatch');
-        }
+        };
       } catch (error) {
         setOutcome('verificationFailed');
-      }
+      };
     };
     
     validateSignature();
@@ -96,4 +96,4 @@ async function calculateSignature(sessionId: string, timestamp: string, result: 
   ).join('');
 
   return signature;
-}
+};
