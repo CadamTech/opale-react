@@ -7,13 +7,13 @@ import { ageKeyButton } from "./style"
 
 export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verificationMethod, onResult, language }: RegisterProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(true);
-  const [{baseApiUrl, authUrl }, setEnvironmentUrls] = useState({baseApiUrl: "", authUrl: ""})
+  const [{baseApiUrl, authUrl }, setEnvironmentUrls] = useState({baseApiUrl: "", authUrl: ""});
 
   useEffect(() => {
-    if (!publicKey) return
-    setEnvironmentUrls(getEnvironmentUrls(publicKey))
-    setIsLoading(false)
-  }, [publicKey])
+    if (!publicKey || !sessionId) return
+    setEnvironmentUrls(getEnvironmentUrls(publicKey));
+    setIsLoading(false);
+  }, [publicKey, sessionId]);
 
   async function getRegistrationOptions(publicKey: string, sessionId: string, ageThreshold: number, verificationMethod: string) {
     const url = `${baseApiUrl}/agekey/registration-options/${sessionId}/?publicKey=${publicKey}`;
@@ -44,8 +44,8 @@ export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verifi
         if (authUrl !== window.location.origin) {
           window.location.href = targetUrl;
           return;
-        }
-      }
+        };
+      };
 
       const registrationOptions = await getRegistrationOptions(publicKey, sessionId, ageThreshold, verificationMethod);
       const startRegistrationOptions = {
@@ -58,11 +58,11 @@ export const AgeKeyRegister = ({ publicKey, sessionId, ageThreshold = 18, verifi
       console.log(error);
     } finally {
       setIsLoading(false);
-    }
-  }
+    };
+  };
 
   return <button style={{...ageKeyButton}} onClick={handleRegister} disabled={isLoading}>
-    <AgeKeyStyleComponent language={language} ageThreshold={ageThreshold} ceremony={'register'} isLoading={isLoading}/>
+    <AgeKeyStyleComponent language={language || 'en'} ageThreshold={ageThreshold || 18} ceremony={'register'} isLoading={isLoading}/>
   </button>
-}
+};
 

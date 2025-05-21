@@ -1,6 +1,6 @@
 // For importing fonts
 // import font from 'https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Inter:opsz@15&display=swap'
-import { CSSProperties } from "react"
+import { CSSProperties } from "react";
 
 
 // Button styles
@@ -12,7 +12,7 @@ export const ageKeyButton: CSSProperties = {
   border: 'none',
   borderRadius: '40px',
   backgroundColor: 'transparent',
-}
+};
 
 // Container styles
 export const ageKeyStyleContainer: CSSProperties = {
@@ -28,13 +28,23 @@ export const ageKeyStyleContainer: CSSProperties = {
   borderRadius: '40px',
   transitionDuration: '200ms',
   cursor: 'pointer'
+};
+
+export const agekeyStyleTestContainer: CSSProperties = {
+  backgroundColor: '#ECECEE',
+  color: '#373A46'
 }
 
 // Hover state is handled differently in React (needs to be applied conditionally)
 export const ageKeyStyleContainerHover = {
   backgroundColor: '#2D009F',
-  transitionDuration: '200ms',
-}
+  transitionDuration: '200ms'
+};
+
+export const ageKeyTestStyleContainerHover = {
+  backgroundColor: '#e0e0e3',
+  transitionDuration: '200ms'
+};
 
 // Icon styles
 export const ageKeyIcon: CSSProperties = {
@@ -42,13 +52,13 @@ export const ageKeyIcon: CSSProperties = {
   width: '24px',
   height: '24px',
   marginLeft: '5px',
-}
+};
 
 export const ageKeyPlusIcon: CSSProperties = {
   position: 'absolute',
   right: '2px',
   top: '3px',
-}
+};
 
 export const ageKeyNumber: CSSProperties = {
   position: 'absolute',
@@ -57,7 +67,7 @@ export const ageKeyNumber: CSSProperties = {
   fontSize: '10px',
   fontFamily: '"Fredoka", sans-serif',
   color: '#3700C1',
-}
+};
 
 // Loader styles
 export const ageKeyLoaderContainer: CSSProperties = {
@@ -70,7 +80,7 @@ export const ageKeyLoaderContainer: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-}
+};
 
 export const ageKeyLoader: CSSProperties = {
   width: '24px',
@@ -81,4 +91,4 @@ export const ageKeyLoader: CSSProperties = {
   borderRight: '3px solid transparent',
   boxSizing: 'border-box',
   animation: `spin 1s linear infinite`
-}
+};

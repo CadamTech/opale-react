@@ -8,7 +8,11 @@
     "en": "create my"
   },
   "update": {
-    "fr": "mettre à niveau mon",
+    "fr": "upgrader mon",
     "en": "upgrade my"
+  },
+  "test": {
+    "fr": "tester mon",
+    "en": "try my"
   }
 }
