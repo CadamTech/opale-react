@@ -1,6 +1,6 @@
-# Opale AgeKey
+# AgeKey React
 
-A React component library for AgeKey registration and authentication. This package provides ready-to-use components to integrate age verification capabilities into your React applications.
+A React component library for AgeKey registration, authentication and modification. This package provides ready-to-use components to integrate age verification capabilities into your React applications.
 
 
 ## Installation
@@ -141,7 +141,7 @@ export default App;
       ageThreshold: 21.0,
       date: "2024-12-31"
     }
-    // Other linked verifications can be added
+    // Other verifications displayed here
   }
 }
 ```
@@ -289,6 +289,7 @@ Possible error messages include:
 
 
 ## Browser Compatibility
+
 
 ### Firefox Support
 

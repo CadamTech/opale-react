@@ -1,4 +1,5 @@
 // Common types
+export type Language = 'en' | 'fr';
 export type Ceremony = 'register' | 'authenticate' | 'update' | 'test';
 export type VerificationMethod = "docScan" | "ageEstimation" | "digitalId" | "creditCard" | "mobile" | "ftn" | "swedishBankId" | "mitId" | "laWallet" | "socialSecurityNumber" | "usFloridaHb3" | "address" | "emailDirectCheck" | "doubleAnonymity"
       
@@ -12,44 +13,42 @@ export type ErrorMessage =
   | "Session expired"
   | "Credential not found, please create new credential";
 
-
-export type RegisterMessage = 'registered' | ErrorMessage;
-
-export type Language = 'en' | 'fr';
-
-export interface RegisterResult {
-  message: RegisterMessage;
-  redirectUrl?: string
+export type Verifications = {
+  [K in VerificationMethod]?: VerificationDetails;
 };
-
-
 
 export interface VerificationDetails {
   ageThreshold: number;
   date: string; // YYYY-MM-DD
 };
 
-export type Verifications = {
-  [K in VerificationMethod]?: VerificationDetails;
+export type RegisterMessage = 'registered'
+export interface RegisterResult {
+  message: RegisterMessage;
+  error: ErrorMessage
+  redirectUrl?: string
 };
 
-type AuthenticateMessage = 'authenticated' | ErrorMessage;
+type AuthenticateMessage = 'authenticated'
 export interface AuthenticateResult {
   message: AuthenticateMessage;
+  error: ErrorMessage
   authenticationData: Verifications;
   redirectUrl?: string
 };
 
-type UpdateMessage = 'updated' | ErrorMessage;
+type UpdateMessage = 'updated'
 export interface UpdateResult {
   message: UpdateMessage;
+  error: ErrorMessage
   authenticationData: Verifications;
   redirectUrl?: string
 };
 
-type AgeKeyTestMessage = 'validated' | ErrorMessage;
+type AgeKeyTestMessage = 'validated'
 export type TestResult = {
   message: AgeKeyTestMessage
+  error: ErrorMessage
 }
 
 // Base props interface

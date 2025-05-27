@@ -5,15 +5,14 @@ export { AgeKeyTest } from './components/AgeKeyTest';
 export { useOpaleSignature } from './hooks/useOpaleSignature';
 export type {
         Ceremony,
+        Language,
         VerificationMethod,
         VerificationDetails,
         ErrorMessage,
-        RegisterMessage,
         RegisterResult,
         AuthenticateResult,
         UpdateResult,
         TestResult,
-        BaseAgeKeyProps,
         RegisterProps,
         AuthenticateProps,
         UpdateProps,
